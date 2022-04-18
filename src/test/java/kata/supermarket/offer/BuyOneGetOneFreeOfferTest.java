@@ -47,4 +47,35 @@ class BuyOneGetOneFreeOfferTest {
         assertEquals(expectedDiscount, discount);
     }
 
+    @Test
+    void applyToOddNumberOfProducts() {
+        Basket basket = new Basket();
+        BigDecimal pricePerUnit = new BigDecimal("2.49");
+        BigDecimal expectedDiscount = new BigDecimal("-2.49");
+        Product product = new Product(pricePerUnit);
+        basket.add(product.oneOf());
+        basket.add(product.oneOf());
+        basket.add(product.oneOf());
+
+        BuyOneGetOneFreeOffer offer = new BuyOneGetOneFreeOffer();
+        BigDecimal discount = offer.discountFor(basket);
+        assertEquals(expectedDiscount, discount);
+    }
+
+    @Test
+    void applyToEvenNumberOfProducts() {
+        Basket basket = new Basket();
+        BigDecimal pricePerUnit = new BigDecimal("2.49");
+        BigDecimal expectedDiscount = new BigDecimal("-4.98");
+        Product product = new Product(pricePerUnit);
+        basket.add(product.oneOf());
+        basket.add(product.oneOf());
+        basket.add(product.oneOf());
+        basket.add(product.oneOf());
+
+        BuyOneGetOneFreeOffer offer = new BuyOneGetOneFreeOffer();
+        BigDecimal discount = offer.discountFor(basket);
+        assertEquals(expectedDiscount, discount);
+    }
+
 }
