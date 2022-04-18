@@ -13,7 +13,7 @@ class BuyOneGetOneFreeOfferTest {
     private static final BigDecimal NO_DISCOUNT = new BigDecimal("0.00");
 
     @Test
-    void buysOneGetsOneFreeDoesNotApplyOnEmptyBasket() {
+    void doNotApplyOnEmptyBasket() {
         Basket basket = new Basket();
 
         BuyOneGetOneFreeOffer offer = new BuyOneGetOneFreeOffer();
@@ -22,7 +22,7 @@ class BuyOneGetOneFreeOfferTest {
     }
 
     @Test
-    void buysOneGetsOneFreeOnSingleItem() {
+    void doNotApplyToSingleItem() {
         Basket basket = new Basket();
         BigDecimal pricePerUnit = new BigDecimal("2.49");
         Product product = new Product(pricePerUnit);
@@ -32,4 +32,19 @@ class BuyOneGetOneFreeOfferTest {
         BigDecimal discount = offer.discountFor(basket);
         assertEquals(NO_DISCOUNT, discount);
     }
+
+    @Test
+    void applyToTwoProducts() {
+        Basket basket = new Basket();
+        BigDecimal pricePerUnit = new BigDecimal("2.49");
+        BigDecimal expectedDiscount = new BigDecimal("-2.49");
+        Product product = new Product(pricePerUnit);
+        basket.add(product.oneOf());
+        basket.add(product.oneOf());
+
+        BuyOneGetOneFreeOffer offer = new BuyOneGetOneFreeOffer();
+        BigDecimal discount = offer.discountFor(basket);
+        assertEquals(expectedDiscount, discount);
+    }
+
 }
