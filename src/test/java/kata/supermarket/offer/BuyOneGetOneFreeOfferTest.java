@@ -22,10 +22,10 @@ class BuyOneGetOneFreeOfferTest {
     }
 
     @Test
-    void doNotApplyToSingleItem() {
+    void doNotApplyToSingleEligibleItem() {
         Basket basket = new Basket();
         BigDecimal pricePerUnit = new BigDecimal("2.49");
-        Product product = new Product(pricePerUnit);
+        Product product = new Product(pricePerUnit, BuyOneGetOneFreeOffer.class);
         basket.add(product.oneOf());
 
         BuyOneGetOneFreeOffer offer = new BuyOneGetOneFreeOffer();
@@ -34,11 +34,11 @@ class BuyOneGetOneFreeOfferTest {
     }
 
     @Test
-    void applyToTwoProducts() {
+    void applyToTwoEligibleProducts() {
         Basket basket = new Basket();
         BigDecimal pricePerUnit = new BigDecimal("2.49");
         BigDecimal expectedDiscount = new BigDecimal("-2.49");
-        Product product = new Product(pricePerUnit);
+        Product product = new Product(pricePerUnit, BuyOneGetOneFreeOffer.class);
         basket.add(product.oneOf());
         basket.add(product.oneOf());
 
@@ -48,11 +48,24 @@ class BuyOneGetOneFreeOfferTest {
     }
 
     @Test
-    void applyToOddNumberOfProducts() {
+    void applyToTwoNonEligibleProducts() {
+        Basket basket = new Basket();
+        BigDecimal pricePerUnit = new BigDecimal("2.49");
+        Product product = new Product(pricePerUnit);
+        basket.add(product.oneOf());
+        basket.add(product.oneOf());
+
+        BuyOneGetOneFreeOffer offer = new BuyOneGetOneFreeOffer();
+        BigDecimal discount = offer.discountFor(basket);
+        assertEquals(NO_DISCOUNT, discount);
+    }
+
+    @Test
+    void applyToOddNumberOfEligibleProducts() {
         Basket basket = new Basket();
         BigDecimal pricePerUnit = new BigDecimal("2.49");
         BigDecimal expectedDiscount = new BigDecimal("-2.49");
-        Product product = new Product(pricePerUnit);
+        Product product = new Product(pricePerUnit, BuyOneGetOneFreeOffer.class);
         basket.add(product.oneOf());
         basket.add(product.oneOf());
         basket.add(product.oneOf());
@@ -63,11 +76,11 @@ class BuyOneGetOneFreeOfferTest {
     }
 
     @Test
-    void applyToEvenNumberOfProducts() {
+    void applyToEvenNumberOfEligibleProducts() {
         Basket basket = new Basket();
         BigDecimal pricePerUnit = new BigDecimal("2.49");
         BigDecimal expectedDiscount = new BigDecimal("-4.98");
-        Product product = new Product(pricePerUnit);
+        Product product = new Product(pricePerUnit, BuyOneGetOneFreeOffer.class);
         basket.add(product.oneOf());
         basket.add(product.oneOf());
         basket.add(product.oneOf());

@@ -20,6 +20,7 @@ public class BuyOneGetOneFreeOffer implements Offer {
         Map<Product, Long> countByProduct = items.stream()
                 .filter(item -> item instanceof ItemByUnit)
                 .map(item -> (ItemByUnit) item)
+                .filter(item -> item.product().isEligibleFor(this.getClass()))
                 .collect(Collectors.groupingBy(ItemByUnit::product, Collectors.counting()));
 
         return countByProduct.entrySet().stream()
