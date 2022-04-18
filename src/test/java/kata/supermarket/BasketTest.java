@@ -1,5 +1,6 @@
 package kata.supermarket;
 
+import kata.supermarket.offer.BuyOneGetOneFreeOffer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,7 +19,7 @@ class BasketTest {
     @MethodSource
     @ParameterizedTest(name = "{0}")
     void basketProvidesTotalValue(String description, String expectedTotal, Iterable<Item> items) {
-        final Basket basket = new Basket();
+        final Basket basket = new Basket(new BuyOneGetOneFreeOffer());
         items.forEach(basket::add);
         assertEquals(new BigDecimal(expectedTotal), basket.total());
     }
@@ -28,6 +29,7 @@ class BasketTest {
                 noItems(),
                 aSingleItemPricedPerUnit(),
                 multipleItemsPricedPerUnit(),
+                twoBogofItemsPricedPerUnit(),
                 aSingleItemPricedByWeight(),
                 multipleItemsPricedByWeight()
         );
@@ -46,6 +48,12 @@ class BasketTest {
     private static Arguments multipleItemsPricedPerUnit() {
         return Arguments.of("multiple items priced per unit", "2.04",
                 Arrays.asList(aPackOfDigestives(), aPintOfMilk()));
+    }
+
+    private static Arguments twoBogofItemsPricedPerUnit() {
+        Product spaghetti = new Product(new BigDecimal("1.50"), BuyOneGetOneFreeOffer.class);
+        return Arguments.of("two BOGOF-eligible items priced per unit", "1.50",
+                Arrays.asList(spaghetti.oneOf(), spaghetti.oneOf()));
     }
 
     private static Arguments aSingleItemPricedPerUnit() {
